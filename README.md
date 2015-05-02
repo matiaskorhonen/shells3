@@ -2,11 +2,7 @@
 
 Need to quickly upload and get a link to a file? This small Bash script will help you do just that.
 
-A small(ish) shells script to upload files top S3 from the command line.
-
-The files are automatically given a timestamp suffix to avoid naming conflicts.
-
-For example, `image.png` will be uploaded as `image-1430566517.png`.
+The files are automatically given a timestamp suffix to avoid naming conflicts. For example, `image.png` will be uploaded as `image-1430566517.png`.
 
 ## Usage
 
