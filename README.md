@@ -22,7 +22,11 @@ The files are automatically given a timestamp suffix to avoid naming conflicts. 
 3. Upload a file
 
     ```sh
-    shells3 image.png
+    shells3 image.png somedoc.txt
+    ```
+   Upload a file in a specific folder with [specific permissions](https://docs.aws.amazon.com/AmazonS3/latest/dev/acl-overview.html#canned-acl)
+   ```sh
+    shells3 -p folder/in/bucket/ -a private image.png somedoc.txt
     ```
 
 ## Compatibility and dependencies
