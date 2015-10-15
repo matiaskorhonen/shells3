@@ -11,6 +11,37 @@ elif [ -f "$HOME/$config_file" ]; then
   source "$HOME/$config_file"
 fi
 
+function show_help {
+  echo -e "Usage: shells3 [OPTION]... [FILE]..."
+  echo -e "Send FILEs to the configured S3 bucket\n"
+
+  echo -e "\tOPTIONS:"
+  echo -e "\t-p\tpath[default: '/'], where you want the file to be saved in the bucket."
+  echo -e "\t-a\tacl[default: 'public-read'], ACL for all the files. CF: https://docs.aws.amazon.com/AmazonS3/latest/dev/acl-overview.html#canned-acl.\n"
+  echo "More info: https://github.com/matiaskorhonen/shells3"
+}
+
+OPTIND=1         # Reset in case getopts has been used previously in the shell.
+aws_path="/"
+acl_string="public-read"
+
+while getopts "h?a:p:" opt; do
+    case "$opt" in
+    h|\?)
+        show_help
+        exit 1
+        ;;
+    a)  acl_string=$OPTARG
+        ;;
+    p)  aws_path=$OPTARG
+        ;;
+
+    esac
+done
+
+shift $((OPTIND-1))
+
+[ "$1" = "--" ] && shift
 # SHELLS3_BUCKET=""
 # SHELLS3_AWS_ACCESS_KEY_ID=""
 # SHELLS3_AWS_SECRET_ACCESS_KEY=""
@@ -53,9 +84,8 @@ function putS3
     content_type="application/octet-stream"
   fi
 
-  aws_path="/"
   date=$(date +"%a, %d %b %Y %T %z")
-  acl="x-amz-acl:public-read"
+  acl="x-amz-acl:$acl_string"
   cache_control="public, max-age=315360000"
 
   string="PUT\n\n$content_type\n$date\n$acl\n/$bucket$aws_path$filename"
@@ -79,14 +109,7 @@ function putS3
 }
 
 if [[ $# -eq 0 || "$1" == "--help" || "$1" == "-h" ]] ; then
-  cat <<EOS
-ShellS3
-
-Usage: shells3 [file ...]
-
-More info: https://github.com/matiaskorhonen/shells3
-EOS
-
+    show_help
     exit 1
 fi
 
